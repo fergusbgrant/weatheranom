@@ -1,7 +1,9 @@
+import json
+import mysql
 import requests
 
 
-def main():
+def lambda_handler(event, context):
     city = 'Dublin'
     url = f'https://geocoding-api.open-meteo.com/v1/search?name={city}&count=10&language=en&format=json'
     results = requests.get(url).json()
@@ -14,8 +16,11 @@ def main():
     url = f'https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&daily=temperature_2m_max,temperature_2m_min&forecast_days=16'
     results = requests.get(url).json()
 
-    print(results)
-    
+    return {
+        'statusCode': 200,
+        'body': json.dumps(results)
+    }
+
 
 if __name__ == '__main__':
-    main()
+    lambda_handler()
