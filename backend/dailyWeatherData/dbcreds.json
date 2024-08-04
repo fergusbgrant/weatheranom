@@ -1,6 +1,6 @@
 {
-    "host":         "weatheranomaurora.cluster-chgyewsm62oj.eu-central-1.rds.amazonaws.com",
+    "host":         "weatheranomdb.chgyewsm62oj.eu-central-1.rds.amazonaws.com",
     "user":         "fergusgrant",
     "password":     "WeatherAnomDB!",
-    "database":     "weatheranomaurora"
+    "database":     "weatheranomdb"
 }
