@@ -5,7 +5,7 @@ import mysql.connector
 
 
 def lambda_handler(event, context):
-    # Connect to Aurora DB
+    # Connect to DB
     cnx = mysql.connector.connect(**credentials())
     cursor = cnx.cursor()
     
