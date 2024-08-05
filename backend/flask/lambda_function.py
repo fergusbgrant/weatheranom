@@ -18,7 +18,7 @@ def main():
     cursor = cnx.cursor()
 
     sql = f"""
-        SELECT NAME, HIST_AVG, FORECAST, DISCREPANCY FROM FORECASTS F
+        SELECT NAME, ISO, HIST_AVG, FORECAST, DISCREPANCY FROM FORECASTS F
         INNER JOIN CITIES C ON F.CITY_ID = C.ID
         ORDER BY ABS(DISCREPANCY) DESC
     """
@@ -29,14 +29,21 @@ def main():
     cursor.close()
     cnx.close()
 
-    data = {}
+    data = []
 
     for row in result:
-        data[row[0]] = [row[1], row[2], row[3]]
-
+        data.append({
+            'city': row[0],
+            'country': row[1],
+            'historical': row[2],
+            'forecast': row[3],
+            'discrepancy': row[4]
+        })
+                        
     return jsonify({
+        'responseCode': 200,
         'body': data
-    }, 200)
+    })
 
 
 def credentials():
