@@ -1,6 +1,0 @@
-{
-    "host":         "weatheranomdb.chgyewsm62oj.eu-central-1.rds.amazonaws.com",
-    "user":         "fergusgrant",
-    "password":     "WeatherAnomDB!",
-    "database":     "weatheranomdb"
-}
