@@ -3,7 +3,7 @@ import ForecastList from './ForecastList'
 
 function App() {
   
-  const [forecast, setForecast] = useState([{}])
+  const [forecast, setForecast] = useState([])
 
   useEffect(() => {
     fetchData()
