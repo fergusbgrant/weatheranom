@@ -16,22 +16,10 @@ function App() {
     console.log(data.body)
   }
 
-  /*useEffect (() => {
-    fetch('https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev').then(
-      res => res.json()
-    ).then(
-      data => {
-        setData(data)
-        console.log(data)
-      }
-    )
-  }, [])*/
-
-
-
   return (
     <ForecastList forecast={forecast} />
   )
+  
 }
 
 export default App
