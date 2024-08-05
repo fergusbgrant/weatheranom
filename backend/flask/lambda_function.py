@@ -35,9 +35,8 @@ def main():
         data[row[0]] = [row[1], row[2], row[3]]
 
     return jsonify({
-        'statusCode': 200,
         'body': data
-    })
+    }, 200)
 
 
 def credentials():
