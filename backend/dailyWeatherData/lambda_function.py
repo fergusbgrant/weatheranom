@@ -17,7 +17,7 @@ def lambda_handler(event, context):
     # Add historical averages and discrepancy figures to forecast dicts
     for city in hist_avgs:
         forecast[city[0]].append(city[1])
-        forecast[city[0]].append(round(abs(forecast[city[0]][0] - city[1]), 2))
+        forecast[city[0]].append(round(forecast[city[0]][0] - city[1]), 2)
 
     # Remove yesterday's prediction from DB
     sql = """

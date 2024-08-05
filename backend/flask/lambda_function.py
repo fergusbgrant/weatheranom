@@ -20,6 +20,7 @@ def main():
     sql = f"""
         SELECT NAME, HIST_AVG, FORECAST, DISCREPANCY FROM FORECASTS F
         INNER JOIN CITIES C ON F.CITY_ID = C.ID
+        ORDER BY ABS(DISCREPANCY) DESC
     """
 
     cursor.execute(sql)
