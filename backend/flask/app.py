@@ -61,6 +61,35 @@ def db(f):
 @cross_origin()
 @login_required
 def index():
+    # Get session data
+    sess = get_session(hash=request.cookies.get('session_hash'))
+
+    # Get forecast for subscriptions
+    result = get_subscriptions(sess[0][0])
+
+    # Create list of dicts for json
+    data = []
+
+    if result != []:
+        for row in result:
+            data.append({
+                'city': row[0],
+                'country': row[1],
+                'historical': row[2],
+                'forecast': row[3],
+                'discrepancy': row[4]
+            })
+
+    # Return data
+    return jsonify({
+        'responseCode': 200,
+        'body': data
+    })
+
+
+@app.route('/all', methods=['GET'])
+@login_required
+def all():
     # Get forecast data from db
     result = get_forecasts()
 
@@ -171,7 +200,7 @@ def login():
 
 
 @login_required
-@app.route('/manage_user', methods=['GET', 'PATCH', 'DELETE'])
+@app.route('/manage-user', methods=['GET', 'PATCH', 'DELETE'])
 def manage_user():
     if request.method == 'DELETE':
         # Get session data
@@ -199,7 +228,7 @@ def manage_user():
 
         # Configure and send response
         response = make_response(jsonify({
-                'requestCode': 200,
+                'responseCode': 200,
                 'body': 'password updated'
             }))
         return response
@@ -207,10 +236,69 @@ def manage_user():
     elif request.method == 'GET':
         # Configure and send response
         response = make_response(jsonify({
-                'requestCode': 200,
+                'responseCode': 200,
                 'body': 'updatepoo'
             }))
         return response
+    
+
+@login_required
+@app.route('/manage-subscriptions', methods=['GET', 'POST', 'DELETE'])
+def manage_subscriptions():
+    if request.method == 'GET':
+        # Get city data
+        result = get_cities()
+
+        # Create city dicts
+        data = []
+        for row in result:
+            data.append({
+                'id': row[0],
+                'city': row[1],
+                'country': row[2]
+            })
+
+        # Return reponse
+        return jsonify({
+            'responseCode': 200,
+            'body': data
+        })
+    
+    elif request.method == 'POST':
+        # Get session data
+        sess = get_session(hash=request.cookies.get('session_hash'))
+
+        # Get city ID from request
+        city_id = request.json['city_id']
+
+        # Create subscription
+        create_subscription(sess[0][0], city_id)
+
+        # Return reponse
+        return jsonify({
+            'responseCode': 200,
+            'body': {
+                'message': 'Subscription created'
+            }
+        })
+    
+    elif request.method == 'DELETE':
+        # Get session data
+        sess = get_session(hash=request.cookies.get('session_hash'))
+
+        # Get city ID and  from request
+        city_id = request.json['city_id']
+
+        # Create subscription
+        delete_subscription(sess[0][0], city_id)
+
+        # Return reponse
+        return jsonify({
+            'responseCode': 200,
+            'body': {
+                'message': 'Subscription deleted'
+            }
+        })
     
 
 @login_required
@@ -336,6 +424,50 @@ def get_forecasts(cnx, cursor):
         SELECT NAME, ISO, HIST_AVG, FORECAST, DISCREPANCY FROM FORECASTS F
         INNER JOIN CITIES C ON F.CITY_ID = C.ID
         ORDER BY ABS(DISCREPANCY) DESC
+    """
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+
+@db
+def get_subscriptions(cnx, cursor, user_id):
+    sql = f"""
+        SELECT NAME, ISO, HIST_AVG, FORECAST, DISCREPANCY FROM SUBSCRIPTIONS S
+        INNER JOIN CITIES C ON S.CITY_ID = C.ID
+        INNER JOIN FORECASTS F ON F.CITY_ID = C.ID
+        WHERE S.USER_ID = {user_id}
+        ORDER BY ABS(DISCREPANCY) DESC
+    """
+    cursor.execute(sql)
+    return cursor.fetchall()
+
+
+@db
+def create_subscription(cnx, cursor, user_id, city_id):
+    sql = f"""
+        INSERT INTO SUBSCRIPTIONS (USER_ID, CITY_ID) VALUES ({user_id}, {city_id})
+    """
+    cursor.execute(sql)
+    cnx.commit()
+    return True
+
+
+@db
+def delete_subscription(cnx, cursor, user_id, city_id):
+    sql = f"""
+        DELETE FROM SUBSCRIPTIONS
+        WHERE USER_ID = {user_id}
+        AND CITY_ID = {city_id}
+    """
+    cursor.execute(sql)
+    cnx.commit()
+    return True
+
+
+@db
+def get_cities(cnx, cursor):
+    sql = f"""
+        SELECT ID, NAME, ISO FROM CITIES
     """
     cursor.execute(sql)
     return cursor.fetchall()
