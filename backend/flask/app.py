@@ -10,7 +10,7 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins='https://main.d2wguw3fssyxn2.amplifyapp.com/')
+CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
 
@@ -180,8 +180,7 @@ def login():
             'body': 'Login successful'
         }), 200)
         response.set_cookie('session_hash', sess)
-        response.headers['Access-Control-Allow-Origin'] = 'https://main.d2wguw3fssyxn2.amplifyapp.com/'
-        response.headers['Access-Control-Allow-Credentials'] = True
+        response.headers.set('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com/')
         return response
 
     elif request.method == 'GET':
