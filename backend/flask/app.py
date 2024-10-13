@@ -132,6 +132,7 @@ def register():
             'body': 'user created successfully'
         }), 200)
         response.set_cookie('session_hash', sess)
+        response.headers['Access-Control-Allow-Credentials'] = True
         return response
     
     elif request.method == 'GET':
