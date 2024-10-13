@@ -10,7 +10,7 @@ const ForecastList = () => {
     }, [])
 
     const fetchData = async () => {
-        const response = await fetch('/all', {  //https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev
+        const response = await fetch('https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev/all', {
                                     method: "GET",
                                     headers: {"Content-Type": "application/json"}
                                 })
