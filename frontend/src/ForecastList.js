@@ -1,6 +1,26 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
-const ForecastList = ({forecast}) => {
+const ForecastList = () => {
+    const [forecast, setForecast] = useState([])
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async () => {
+        const response = await fetch('/all', {
+                                    method: "GET",
+                                    headers: {"Content-Type": "application/json"}
+                                })
+        const data  = await response.json()
+        if (data.body === 'Login required') {
+            navigate('../login')
+        }
+        setForecast(data.body)
+    }
+
     return <div>
         <h2>Forecast</h2>
         <table>

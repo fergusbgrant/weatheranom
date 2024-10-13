@@ -10,7 +10,7 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
 
@@ -20,22 +20,18 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         # Check if cookie exists
         if request.cookies.get('session_hash') == None:
-            return ({
-                'statusCode': 403,
-                'body': {
-                    'message': 'Login required'
-                }
-            })
+            response = make_response(jsonify({
+                'body': 'Login required'
+            }), 403)
+            return response
         
         # Check db for session / session timeout
         result = get_session(hash=request.cookies.get('session_hash'))
         if result == [] or (datetime.now() - result[0][2]).total_seconds() > 600:
-            return ({
-                'statusCode': 403,
-                'body': {
-                    'message': 'Login required'
-                }
-            })
+            response = make_response(jsonify({
+                'body': 'Login required'
+            }), 403)
+            return response
         
         # Refresh timestamp on session
         refresh_session(result[0][1])
@@ -81,10 +77,10 @@ def index():
             })
 
     # Return data
-    return jsonify({
-        'responseCode': 200,
+    response = make_response(jsonify({
         'body': data
-    })
+    }), 200)
+    return response
 
 
 @app.route('/all', methods=['GET'])
@@ -105,10 +101,10 @@ def all():
         })
                         
     # Return data
-    return jsonify({
-        'responseCode': 200,
+    response = make_response(jsonify({
         'body': data
-    })
+    }), 200)
+    return response
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -123,29 +119,26 @@ def register():
 
         # Return error if username exists
         if result != []:
-            return jsonify({
-                'responseCode': 409,
-                'body': {
-                    'message': 'Username already exists'
-                }
-            })
+            response = make_response(jsonify({
+                'body': 'Username already exists'
+            }), 409)
+            return response
 
         # Create new user in db
         sess = create_user(username, password)
 
         # Configure and return response
         response = make_response(jsonify({
-            'requestCode': 200,
             'body': 'user created successfully'
-        }))
+        }), 200)
         response.set_cookie('session_hash', sess)
         return response
     
     elif request.method == 'GET':
-        return jsonify({
-            'responseCode': 200,
+        response = make_response(jsonify({
             'body': 'poo'
-        })
+        }), 200)
+        return response
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -160,21 +153,17 @@ def login():
 
         # Return error if user not found
         if result == []:
-            return jsonify({
-                'requestCode': 404,
-                'body': {
-                    'message': 'User not found'
-                }
-            })
+            response = make_response(jsonify({
+                'body': 'User not found'
+            }), 404)
+            return response
         
         # Return error if wrong password used
         if not check_password_hash(result[0][2], password):
-            return jsonify({
-                'requestCode': 401,
-                'body': {
-                    'message': 'Incorrect password provided'
-                }
-            })
+            response = make_response(jsonify({
+                'body': 'Incorrect password provided'
+            }), 401)
+            return response
 
         # Delete any pre-existing session for user
         sess_result = get_session(user_id=result[0][0])
@@ -186,17 +175,16 @@ def login():
 
         # Configure and return response
         response = make_response(jsonify({
-            'requestCode': 200,
-            'body': 'login successful'
-        }))
+            'body': 'Login successful'
+        }), 200)
         response.set_cookie('session_hash', sess)
         return response
 
     elif request.method == 'GET':
-        return jsonify({
-            'responseCode': 200,
+        response = make_response(jsonify({
             'body': 'logpoo'
-        })
+        }), 200)
+        return response
 
 
 @login_required
@@ -212,9 +200,8 @@ def manage_user():
 
         # Configure and send response
         response = make_response(jsonify({
-                'requestCode': 200,
-                'body': 'user deletion successful'
-            }))
+            'body': 'user deletion successful'
+        }), 200)
         response.set_cookie('session_hash', '', expires=0)
         return response
     
@@ -228,17 +215,15 @@ def manage_user():
 
         # Configure and send response
         response = make_response(jsonify({
-                'responseCode': 200,
-                'body': 'password updated'
-            }))
+            'body': 'password updated'
+        }), 200)
         return response
     
     elif request.method == 'GET':
         # Configure and send response
         response = make_response(jsonify({
-                'responseCode': 200,
-                'body': 'updatepoo'
-            }))
+            'body': 'updatepoo'
+        }), 200)
         return response
     
 
@@ -259,10 +244,10 @@ def manage_subscriptions():
             })
 
         # Return reponse
-        return jsonify({
-            'responseCode': 200,
+        response = make_response(jsonify({
             'body': data
-        })
+        }), 200)
+        return response
     
     elif request.method == 'POST':
         # Get session data
@@ -275,12 +260,10 @@ def manage_subscriptions():
         create_subscription(sess[0][0], city_id)
 
         # Return reponse
-        return jsonify({
-            'responseCode': 200,
-            'body': {
-                'message': 'Subscription created'
-            }
-        })
+        response = make_response(jsonify({
+            'body': 'Subscription created'
+        }), 200)
+        return response
     
     elif request.method == 'DELETE':
         # Get session data
@@ -293,12 +276,10 @@ def manage_subscriptions():
         delete_subscription(sess[0][0], city_id)
 
         # Return reponse
-        return jsonify({
-            'responseCode': 200,
-            'body': {
-                'message': 'Subscription deleted'
-            }
-        })
+        response = make_response(jsonify({
+            'body': 'Subscription deleted'
+        }), 200)
+        return response
     
 
 @login_required
@@ -309,9 +290,8 @@ def logout():
 
     # Configure and send response
     response = make_response(jsonify({
-            'requestCode': 200,
-            'body': 'logout successful'
-        }))
+        'body': 'Logout successful'
+    }), 200)
     response.set_cookie('session_hash', '', expires=0)
     return response
 
