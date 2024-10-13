@@ -12,7 +12,7 @@ const LoginForm = ({}) => {
             username,
             password
         }
-        const path = "https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev/login"
+        const path = "/login" //https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev
         const options = {
             method: "POST",
             headers: {
@@ -21,7 +21,6 @@ const LoginForm = ({}) => {
             body: JSON.stringify(data)
         }
         const response = await fetch(path, options)
-        console.log(response)
         if (response.status !== 201 && response.status !== 200) {
             const data = await response.json()
             alert(data.body)
