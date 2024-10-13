@@ -25,7 +25,7 @@ const LoginForm = ({}) => {
             const data = await response.json()
             alert(data.body)
         } else {
-            navigate('../login')
+            window.location.reload()
         }
 
     }
