@@ -1,6 +1,6 @@
 import awsgi
 from datetime import datetime
-from flask import Flask, jsonify, make_response, request
+from flask import Flask, jsonify, make_response, request, Response
 from flask_cors import CORS, cross_origin
 from functools import wraps
 import json
@@ -15,13 +15,19 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
 
 
-@app.after_request
+"""@app.after_request
 def after_request(response):
     response.headers.add('Access-Control-Allow-Origin', 'http://localhost:8080')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
+    return response"""
+
+
+@app.before_request
+def basic_authentication():
+    if request.method.lower() == 'options':
+        return Response()
 
 
 def login_required(f):

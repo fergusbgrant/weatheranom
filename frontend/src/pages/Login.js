@@ -12,7 +12,7 @@ const LoginForm = ({}) => {
             username,
             password
         }
-        const path = "https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev/login/"
+        const path = "https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev/login"
         const options = {
             method: "POST",
             headers: {
