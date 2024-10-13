@@ -21,6 +21,7 @@ const LoginForm = ({}) => {
             body: JSON.stringify(data)
         }
         const response = await fetch(path, options)
+        console.log(response)
         if (response.status !== 201 && response.status !== 200) {
             const data = await response.json()
             alert(data.body)
