@@ -10,9 +10,18 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins=['https://main.d2wguw3fssyxn2.amplifyapp.com/'])
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
+
+
+@app.after_request
+def after_request(response):
+    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:8080')
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
+    return response
 
 
 def login_required(f):
@@ -143,7 +152,6 @@ def register():
 
 
 @app.route('/login', methods=['GET', 'POST'])
-@cross_origin()
 def login():
     if request.method == 'POST':
         # Get username and password submitted
@@ -180,13 +188,14 @@ def login():
             'body': 'Login successful'
         }), 200)
         response.set_cookie('session_hash', sess)
-        response.headers.set('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com/')
+        response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com/')
         return response
 
     elif request.method == 'GET':
         response = make_response(jsonify({
             'body': 'logpoo'
         }), 200)
+        response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com/')
         return response
 
 
