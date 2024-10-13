@@ -10,7 +10,7 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+CORS(app, supports_credentials=True, origins='*')
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
 
