@@ -18,6 +18,7 @@ const ForecastList = () => {
         const data  = await response.json()
         if (data.body === 'Login required') {
             navigate('../login')
+            console.log(response)
         }
         setForecast(data.body)
     }
