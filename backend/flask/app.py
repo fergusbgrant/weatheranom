@@ -17,7 +17,7 @@ app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
 
 @app.after_request
 def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com/')
+    response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
     response.headers.add('Access-Control-Allow-Credentials', 'true')
