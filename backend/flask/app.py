@@ -1,6 +1,6 @@
 import awsgi
-from datetime import datetime
-from flask import Flask, jsonify, make_response, request, Response
+from datetime import datetime, timedelta
+from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS, cross_origin
 from functools import wraps
 import json
@@ -10,27 +10,9 @@ import uuid
 
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, resources={r'/*': {'origins': 'https://main.d2wguw3fssyxn2.amplifyapp.com/'}})
+CORS(app, supports_credentials=True)
 app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = 'lkjgbae;j35h60#!s/.v,'
-
-
-"""@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response
-
-
-@app.before_request
-def basic_authentication(response):
-    response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
-    response.headers.add('Access-Control-Allow-Credentials', 'true')
-    return response"""
 
 
 def login_required(f):
@@ -198,7 +180,7 @@ def login():
         response = make_response(jsonify({
             'body': 'Login successful'
         }), 200)
-        response.set_cookie('session_hash', sess, samesite=None)
+        response.set_cookie('session_hash', sess, samesite='None', max_age=timedelta(days=400), secure=True)
         response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com')
         response.headers.add('Access-Control-Allow-Credentials', 'true')
         return response
