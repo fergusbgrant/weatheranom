@@ -26,7 +26,7 @@ const LoginForm = ({}) => {
             const data = await response.json()
             alert(data.body)
         } else {
-            console.log(response)
+            navigate('../all')
         }
 
     }
