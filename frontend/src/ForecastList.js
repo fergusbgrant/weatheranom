@@ -12,7 +12,7 @@ const ForecastList = () => {
     const fetchData = async () => {
         const response = await fetch('https://75ny89k623.execute-api.eu-central-1.amazonaws.com/dev/all', {
                                     method: "GET",
-                                    credentials: 'include',
+                                    credentials: 'same-origin',
                                     headers: {"Content-Type": "application/json"}
                                 })
         const data  = await response.json()
