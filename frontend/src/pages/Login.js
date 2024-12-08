@@ -18,7 +18,7 @@ const LoginForm = ({}) => {
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: 'same-origin',
+            credentials: 'include',
             body: JSON.stringify(data)
         }
         const response = await fetch(path, options)
