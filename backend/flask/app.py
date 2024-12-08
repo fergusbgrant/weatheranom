@@ -122,6 +122,8 @@ def all():
     response = make_response(jsonify({
         'body': data
     }), 200)
+    response.headers.add('Access-Control-Allow-Origin', 'https://main.d2wguw3fssyxn2.amplifyapp.com')
+    response.headers.add('Access-Control-Allow-Credentials', 'true')
     return response
 
 
